@@ -28,10 +28,10 @@ data("ny_noaa")
 ## Problem 2
 
 ``` r
-accelerometer_data = read_csv(file = "./data/nhanes_accel.csv",na = c("", "NA", 999)) %>% 
-                    janitor::clean_names() %>% 
-                    mutate(as.numeric(min1:min1440)) %>% 
-                    drop_na()
+accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA", 999)) %>%
+  janitor::clean_names() %>%
+  mutate(seqn=as.character(seqn)) %>% 
+  drop_na()
 ```
 
     ## Rows: 250 Columns: 1441
@@ -42,15 +42,11 @@ accelerometer_data = read_csv(file = "./data/nhanes_accel.csv",na = c("", "NA", 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-    ## Warning: There was 1 warning in `mutate()`.
-    ## ℹ In argument: `as.numeric(min1:min1440)`.
-    ## Caused by warning in `min1:min1440`:
-    ## ! numerical expression has 250 elements: only the first used
-
 ``` r
 demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 999),
                     skip = 4, col_names =TRUE) %>% 
                     janitor::clean_names() %>% 
+                     mutate(seqn=as.character(seqn)) %>% 
                     filter(age >21) %>% 
                     drop_na()
 ```
@@ -62,3 +58,11 @@ demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 9
     ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+combined_nhanes = 
+  left_join(accelerometer_data, demographics_data, by= "seqn") %>% 
+  janitor::clean_names() %>%
+  relocate(seqn,sex,age,bmi,education) %>% 
+  drop_na(sex,age,bmi,education)
+```
