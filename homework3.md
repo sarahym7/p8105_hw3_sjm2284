@@ -18,6 +18,30 @@ library(tidyverse)
     ## ✖ dplyr::lag()    masks stats::lag()
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
+``` r
+library(ggridges)
+library(hexbin)
+library(patchwork)
+
+knitr:: opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+ theme(legend.position = "bottom"))
+
+options(
+  
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_fill_discrete = scale_fill_viridis_d()    
+
+scale_colour_discrete = scale_fill_viridis_d() 
+```
+
 ## Problem 1
 
 ``` r
@@ -28,6 +52,7 @@ data("ny_noaa")
 ## Problem 2
 
 ``` r
+#reading in data and cleaning 
 accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA", 999)) %>%
   janitor::clean_names() %>%
   mutate(seqn=as.character(seqn)) %>% 
@@ -58,6 +83,34 @@ demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 9
     ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+Producing reader friendly table for number of men and women in each
+education category
+
+``` r
+demographics_data %>% 
+            group_by(sex,education) %>% 
+            summarize(counts= n()) %>% 
+          mutate(sex = recode(sex, "1"= "male", "2"= "female")) %>% 
+          mutate(education=recode(education,
+                                  "1"="Less than High School", 
+                                  "2"="High School Equivalent", 
+                                  "3"="More than high school")) %>% 
+            pivot_wider(
+              names_from = education,
+              values_from = counts,
+              names_prefix = "Education "
+            ) %>% 
+  knitr::kable()
+```
+
+    ## `summarise()` has grouped output by 'sex'. You can override using the `.groups`
+    ## argument.
+
+| sex    | Education Less than High School | Education High School Equivalent | Education More than high school |
+|:-------|--------------------------------:|---------------------------------:|--------------------------------:|
+| male   |                              27 |                               34 |                              54 |
+| female |                              28 |                               23 |                              59 |
 
 ``` r
 combined_nhanes = 

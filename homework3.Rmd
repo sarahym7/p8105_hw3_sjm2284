@@ -13,6 +13,27 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+library(ggridges)
+library(hexbin)
+library(patchwork)
+
+knitr:: opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+ theme(legend.position = "bottom"))
+
+options(
+  
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_fill_discrete = scale_fill_viridis_d()    
+
+scale_colour_discrete = scale_fill_viridis_d() 
 
 ```
 
@@ -29,6 +50,8 @@ data("ny_noaa")
 ## Problem 2 
 
 ```{r}
+
+#reading in data and cleaning 
 accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA", 999)) %>%
   janitor::clean_names() %>%
   mutate(seqn=as.character(seqn)) %>% 
@@ -44,6 +67,28 @@ demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 9
 
 
 ```
+
+Producing reader friendly table for number of men and women in each education category 
+
+```{r}
+demographics_data %>% 
+            group_by(sex,education) %>% 
+            summarize(counts= n()) %>% 
+          mutate(sex = recode(sex, "1"= "male", "2"= "female")) %>% 
+          mutate(education=recode(education,
+                                  "1"="Less than High School", 
+                                  "2"="High School Equivalent", 
+                                  "3"="More than high school")) %>% 
+            pivot_wider(
+              names_from = education,
+              values_from = counts,
+              names_prefix = "Education "
+            ) %>% 
+  knitr::kable()
+        
+
+```
+
 
 
 ```{r combined_data}
