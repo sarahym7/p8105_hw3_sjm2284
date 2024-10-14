@@ -3,33 +3,62 @@ Homework 3
 Sarahy Martinez
 10/13/2023
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that
-includes both content as well as the output of any embedded R code
-chunks within the document. You can embed an R code chunk like this:
-
 ``` r
-summary(cars)
+library(tidyverse)
 ```
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+    ## ✔ purrr     1.0.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
-## Including Plots
+## Problem 1
 
-You can also embed plots, for example:
+``` r
+library(p8105.datasets)
+data("ny_noaa")
+```
 
-![](homework3_files/figure-gfm/pressure-1.png)<!-- -->
+## Problem 2
 
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+``` r
+accelerometer_data = read_csv(file = "./data/nhanes_accel.csv",na = c("", "NA", 999)) %>% 
+                    janitor::clean_names() %>% 
+                    mutate(as.numeric(min1:min1440)) %>% 
+                    drop_na()
+```
+
+    ## Rows: 250 Columns: 1441
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## dbl (1441): SEQN, min1, min2, min3, min4, min5, min6, min7, min8, min9, min1...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+    ## Warning: There was 1 warning in `mutate()`.
+    ## ℹ In argument: `as.numeric(min1:min1440)`.
+    ## Caused by warning in `min1:min1440`:
+    ## ! numerical expression has 250 elements: only the first used
+
+``` r
+demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 999),
+                    skip = 4, col_names =TRUE) %>% 
+                    janitor::clean_names() %>% 
+                    filter(age >21) %>% 
+                    drop_na()
+```
+
+    ## Rows: 250 Columns: 5
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## dbl (5): SEQN, sex, age, BMI, education
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
