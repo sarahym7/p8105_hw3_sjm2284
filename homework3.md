@@ -22,24 +22,6 @@ library(tidyverse)
 library(ggridges)
 library(hexbin)
 library(patchwork)
-
-knitr:: opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
-
-theme_set(theme_minimal()+ theme(legend.position = "bottom"))
-
-options(
-  
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
-
-scale_fill_discrete = scale_fill_viridis_d()    
-
-scale_colour_discrete = scale_fill_viridis_d() 
 ```
 
 ## Problem 1
@@ -50,6 +32,8 @@ data("ny_noaa")
 ```
 
 ## Problem 2
+
+Reading In, Cleaning, Combining Data
 
 ``` r
 #reading in data and cleaning 
@@ -72,7 +56,7 @@ demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 9
                     skip = 4, col_names =TRUE) %>% 
                     janitor::clean_names() %>% 
                      mutate(seqn=as.character(seqn)) %>% 
-                    filter(age >21) %>% 
+                    filter(age >=21) %>% 
                     drop_na()
 ```
 
@@ -84,11 +68,19 @@ demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 9
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
+``` r
+combined_nhanes = 
+  left_join(accelerometer_data, demographics_data, by= "seqn") %>% 
+  janitor::clean_names() %>%
+  relocate(seqn,sex,age,bmi,education) %>% 
+  drop_na(sex,age,bmi,education)
+```
+
 Producing reader friendly table for number of men and women in each
 education category
 
 ``` r
-demographics_data %>% 
+combined_nhanes %>% 
             group_by(sex,education) %>% 
             summarize(counts= n()) %>% 
           mutate(sex = recode(sex, "1"= "male", "2"= "female")) %>% 
@@ -109,13 +101,29 @@ demographics_data %>%
 
 | sex    | Education Less than High School | Education High School Equivalent | Education More than high school |
 |:-------|--------------------------------:|---------------------------------:|--------------------------------:|
-| male   |                              27 |                               34 |                              54 |
+| male   |                              27 |                               35 |                              56 |
 | female |                              28 |                               23 |                              59 |
 
+Age Distributions of each category
+
 ``` r
-combined_nhanes = 
-  left_join(accelerometer_data, demographics_data, by= "seqn") %>% 
-  janitor::clean_names() %>%
-  relocate(seqn,sex,age,bmi,education) %>% 
-  drop_na(sex,age,bmi,education)
+ demo_data= combined_nhanes %>% 
+  mutate(sex = recode(sex, "1" = "male", "2" = "female")) %>% 
+  mutate(sex= as.factor(sex)) %>% 
+  mutate(education = recode(education,
+                            "1" = "Less than High School", 
+                            "2" = "High School Equivalent", 
+                            "3" = "More than High School")) %>% 
+  mutate(education= fct_relevel(education, "Less than High School", "High School Equivalent", "More than High School")) %>% 
+  select(age,sex,education) %>% 
+  filter(age>=21) %>% 
+  drop_na()
+
+
+ggplot(demo_data, aes(x = age, fill = sex)) + 
+  geom_density(alpha = 0.5) + 
+  facet_grid(. ~ education) +
+  theme_minimal()
 ```
+
+![](homework3_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
