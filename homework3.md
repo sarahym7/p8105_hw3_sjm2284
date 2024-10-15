@@ -42,14 +42,14 @@ scale_fill_discrete = scale_fill_viridis_d()
 scale_colour_discrete = scale_fill_viridis_d() 
 ```
 
-## Problem 1
+# Problem 1
 
 ``` r
 library(p8105.datasets)
 data("ny_noaa")
 ```
 
-## Problem 2
+# Problem 2A
 
 Reading In, Cleaning, Combining Data
 
@@ -90,22 +90,23 @@ demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 9
 combined_nhanes = 
   left_join(accelerometer_data, demographics_data, by= "seqn") %>% 
   janitor::clean_names() %>%
-  relocate(seqn,sex,age,bmi,education) %>% 
+  relocate(seqn,sex,age,bmi,education) %>%          
+  mutate(sex = recode(sex, "1"= "male", "2"= "female")) %>% 
+   mutate(sex= as.factor(sex)) %>% 
+          mutate(education=recode(education,
+                                  "1"="Less than High School", 
+                                  "2"="High School Equivalent", 
+                                  "3"="More than High School")) %>% 
+  mutate(education= fct_relevel(education, "Less than High School", "High School Equivalent", "More than High School")) %>% 
   drop_na(sex,age,bmi,education)
 ```
 
-Producing reader friendly table for number of men and women in each
-education category
+## 2B Producing reader friendly table for number of men and women in each education category
 
 ``` r
 combined_nhanes %>% 
             group_by(sex,education) %>% 
             summarize(counts= n()) %>% 
-          mutate(sex = recode(sex, "1"= "male", "2"= "female")) %>% 
-          mutate(education=recode(education,
-                                  "1"="Less than High School", 
-                                  "2"="High School Equivalent", 
-                                  "3"="More than high school")) %>% 
             pivot_wider(
               names_from = education,
               values_from = counts,
@@ -117,22 +118,19 @@ combined_nhanes %>%
     ## `summarise()` has grouped output by 'sex'. You can override using the `.groups`
     ## argument.
 
-| sex    | Education Less than High School | Education High School Equivalent | Education More than high school |
+| sex    | Education Less than High School | Education High School Equivalent | Education More than High School |
 |:-------|--------------------------------:|---------------------------------:|--------------------------------:|
-| male   |                              27 |                               35 |                              56 |
 | female |                              28 |                               23 |                              59 |
+| male   |                              27 |                               35 |                              56 |
+
+Based on this output more men have a high school equivalent education
+whereas more women either have less than a high school education or more
+than a high school education but they do not vary as much from the men.
 
 Age Distributions of each category
 
 ``` r
  demo_data= combined_nhanes %>% 
-  mutate(sex = recode(sex, "1" = "male", "2" = "female")) %>% 
-  mutate(sex= as.factor(sex)) %>% 
-  mutate(education = recode(education,
-                            "1" = "Less than High School", 
-                            "2" = "High School Equivalent", 
-                            "3" = "More than High School")) %>% 
-  mutate(education= fct_relevel(education, "Less than High School", "High School Equivalent", "More than High School")) %>% 
   select(age,sex,education) %>% 
   filter(age>=21) %>% 
   drop_na()
@@ -150,18 +148,19 @@ ggplot(demo_data, aes(x = age, fill = sex)) +
 ```
 
 <img src="homework3_files/figure-gfm/unnamed-chunk-4-1.png" width="90%" />
-Aggregating Across Minutes to Create Total Activity
+From this plot we can see that females between the ages 20 and 40 have
+an education greater than high school in comparison to men. Whereas men
+have also who habe more than a highschool dregree are 20-40 but there
+are not as many. Additonally, those who have less than a high school
+dregree begin to somewhat overlap between men and women around 60-80 and
+lastly for high school equivalent women tended to be between 60 and 80
+whereas mean were 20-40.
+
+## Problem 2C Aggregating Across Minutes to Create Total Activity
 
 ``` r
  aggregate_data = combined_nhanes %>% 
   mutate(total_activity= rowSums(select(.,starts_with("min")))) %>% 
-  mutate(sex = recode(sex, "1" = "male", "2" = "female")) %>% 
-  mutate(sex= as.factor(sex)) %>% 
-  mutate(education = recode(education,
-                            "1" = "Less than High School", 
-                            "2" = "High School Equivalent", 
-                            "3" = "More than High School")) %>% 
-  mutate(education= fct_relevel(education, "Less than High School", "High School Equivalent", "More than High School")) %>% 
   select(total_activity, age, sex, education)
 
 
@@ -179,3 +178,13 @@ ggplot(aggregate_data, aes(x=age, y=total_activity, color=sex))+
     ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
 <img src="homework3_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
+In this graph we can see a commonality in the slope changes, all
+educations have a negative slope. This implies that as age increases
+amount of total activty increases among all of the education categories.
+However, we can note that for women who have a high school equivalent
+education their total physical activity drops tremendously between the
+ages of 40 and 60 whereas men in the less than high schools education
+physical activity drops tremendously after the ages 60-80. Another
+commonality is that at around age 80 across the education levels men and
+women have about the same amount of total activity being about 10,000
+min.
