@@ -137,8 +137,34 @@ ggplot(aggregate_data, aes(x=age, y=total_activity, color=sex))+
   )
 
 ```
-In this graph we can see a commonality in the slope changes, all educations have a negative slope. This implies that as age increases amount of total activty increases among all of the education categories. However, we can note that for women who have a high school equivalent education their total physical activity drops tremendously between the ages of 40 and 60 whereas men in the less than high schools education physical activity drops tremendously after the ages 60-80. Another commonality is that at around age 80 across the education levels men and women have about the same amount of total activity being about 10,000 min. 
+In this graph we can see a commonality in the slope changes, all educations have a negative slope. This implies that as age increases amount of total activity increases among all of the education categories. However, we can note that for women who have a high school equivalent education their total physical activity drops tremendously between the ages of 40 and 60 whereas men in the less than high schools education physical activity drops tremendously after the ages 60-80. Another commonality is that at around age 80 across the education levels men and women have about the same amount of total activity being about 10,000 min. 
 
+## Problem 2D 
+
+Three panel plot showing 24 hour activity time course 
+```{r}
+ 
+activity_twenty_four_hour = combined_nhanes %>%
+  pivot_longer(
+    cols = starts_with("min"),
+    names_to = "minute", 
+    values_to = "activity",
+    names_prefix = "min") %>%
+  mutate(minute = as.numeric(minute)) %>% 
+  mutate(hour= minute/60) 
+
+ggplot(activity_twenty_four_hour, aes(x=hour, y= activity, color=sex, group =seqn))+
+  geom_line(alpha= .2)+
+  geom_smooth(aes(group = sex),se= FALSE)+
+  facet_grid(. ~ education)+
+  labs(
+    title = "24- Hour Activity Time by Education Attainment",
+    x = "Hours",
+    y= "Actvity"
+  )
+
+
+```
 
 
 
