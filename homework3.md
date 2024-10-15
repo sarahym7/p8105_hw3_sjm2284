@@ -217,3 +217,9 @@ ggplot(activity_twenty_four_hour, aes(x=hour, y= activity, color=sex, group =seq
     ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
 
 <img src="homework3_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />
+Based off of this graph we can see that within 24 hours that amount of
+activity for men and women overlap between those who attained less than
+or equivalent to a high school education. Whereas for those who have
+more than a high school education women seem to have higher rates of
+activity within the time window of 5-10 hours and men peak at around the
+20 hour window.
