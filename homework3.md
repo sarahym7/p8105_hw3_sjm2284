@@ -22,6 +22,24 @@ library(tidyverse)
 library(ggridges)
 library(hexbin)
 library(patchwork)
+
+knitr:: opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+ theme(legend.position = "bottom"))
+
+options(
+  
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_fill_discrete = scale_fill_viridis_d()    
+
+scale_colour_discrete = scale_fill_viridis_d() 
 ```
 
 ## Problem 1
@@ -123,8 +141,41 @@ Age Distributions of each category
 ggplot(demo_data, aes(x = age, fill = sex)) + 
   geom_density(alpha = 0.5) + 
   facet_grid(. ~ education) +
-  theme_minimal()
+  theme_minimal()+
+   labs(
+    title = "Age Distributions of Sex and Education Level",
+    x = "Age",
+    y= "Density"
+  )
 ```
 
-![](homework3_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+<img src="homework3_files/figure-gfm/unnamed-chunk-4-1.png" width="90%" />
 Aggregating Across Minutes to Create Total Activity
+
+``` r
+ aggregate_data = combined_nhanes %>% 
+  mutate(total_activity= rowSums(select(.,starts_with("min")))) %>% 
+  mutate(sex = recode(sex, "1" = "male", "2" = "female")) %>% 
+  mutate(sex= as.factor(sex)) %>% 
+  mutate(education = recode(education,
+                            "1" = "Less than High School", 
+                            "2" = "High School Equivalent", 
+                            "3" = "More than High School")) %>% 
+  mutate(education= fct_relevel(education, "Less than High School", "High School Equivalent", "More than High School")) %>% 
+  select(total_activity, age, sex, education)
+
+
+ggplot(aggregate_data, aes(x=age, y=total_activity, color=sex))+
+  geom_point(alpha= .5)+
+  geom_smooth(se= FALSE)+
+  facet_grid(. ~ education)+
+  labs(
+    title = "Age vs Total Activity Among Men and Women Varying By Education",
+    x = "Age",
+    y= "Total Activity"
+  )
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+<img src="homework3_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
