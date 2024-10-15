@@ -127,3 +127,4 @@ ggplot(demo_data, aes(x = age, fill = sex)) +
 ```
 
 ![](homework3_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+Aggregating Across Minutes to Create Total Activity

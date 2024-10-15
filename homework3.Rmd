@@ -4,12 +4,6 @@ author: "Sarahy Martinez"
 date: "10/13/2023"
 output: github_document
 ---
----
-title: "Homework 3"
-author: "Sarahy Martinez"
-date: "10/13/2023"
-output: github_document
----
 
 ```{r}
 library(tidyverse)
@@ -31,7 +25,6 @@ data("ny_noaa")
 
 
 ## Problem 2 
-
 
 Reading In, Cleaning, Combining Data 
 ```{r}
@@ -101,7 +94,10 @@ ggplot(demo_data, aes(x = age, fill = sex)) +
   theme_minimal()
 
 
+```
+Aggregating Across Minutes to Create Total Activity 
+
+```{r}
 
 ```
-
 
