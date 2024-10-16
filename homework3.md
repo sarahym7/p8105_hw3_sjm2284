@@ -295,7 +295,11 @@ july_2020 = read_csv(file = "./data/July_2020_Citi.csv", na = c("", "NA", 999)) 
 
 
 combined_years_data =  
-  bind_rows(jan_2020, jan_2024, july_2020, july_2024)
+  bind_rows(jan_2020, jan_2024, july_2020, july_2024) %>% 
+  janitor::clean_names() %>% 
+  mutate( weekdays= factor(weekdays),
+          weekdays= forcats:: fct_relevel(weekdays, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), 
+          duration = as.numeric(duration))
 
 
 # producing reader friendly table 
@@ -341,3 +345,35 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
 | month | year | Pier 61 at Chelsea Piers | University Pl & E 14 St | W 21 St & 6 Ave | West St & Chambers St | W 31 St & 7 Ave |
 |:------|:-----|-------------------------:|------------------------:|----------------:|----------------------:|----------------:|
 | july  | 2024 |                      163 |                     155 |             152 |                   150 |             145 |
+
+## problem 3 part 3
+
+``` r
+med_duration = combined_years_data %>% 
+  separate(month_year, into = c("month", "year"), sep = "_") %>% 
+    mutate( month = factor(month),
+          month= forcats:: fct_relevel(month, "jan", "july"), 
+          year= as.numeric(year))%>% 
+  group_by(weekdays, month, year) %>% 
+  summarise(median_duration = median(duration, na.rm = TRUE))
+```
+
+    ## `summarise()` has grouped output by 'weekdays', 'month'. You can override using
+    ## the `.groups` argument.
+
+``` r
+ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month)) +
+         geom_bar(stat = "identity", position = "dodge")+
+  facet_grid(.~year) %>% 
+  labs(
+     title = "Median Ride Duration by Day of the Week, Month, and Year",
+    x = "Day of the Week",
+    y = "Median Ride Duration (min)",
+    fill = "Month"
+  ) +
+  theme_minimal()+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+  legend.position = "right")
+```
+
+<img src="homework3_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />
