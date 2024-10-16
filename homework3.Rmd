@@ -45,7 +45,7 @@ data("ny_noaa")
 # Problem 2A 
 
 Reading In, Cleaning, Combining Data 
-```{r, data_clean, message=FALSE}
+```{r, data_clean}
 
 #reading in data and cleaning 
 accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA", 999)) %>%
