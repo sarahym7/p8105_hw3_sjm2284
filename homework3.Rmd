@@ -45,7 +45,7 @@ data("ny_noaa")
 # Problem 2A 
 
 Reading In, Cleaning, Combining Data 
-```{r, data_clean}
+```{r, data_clean, message=FALSE}
 
 #reading in data and cleaning 
 accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA", 999)) %>%
@@ -95,7 +95,7 @@ Based on this output more men have a high school equivalent education whereas mo
 
 
 Age Distributions of each category
-```{r, age_dist, message=FALSE}
+```{r, age_dist}
 
  demo_data= combined_nhanes %>% 
   select(age,sex,education) %>% 
