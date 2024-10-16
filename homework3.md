@@ -223,3 +223,97 @@ or equivalent to a high school education. Whereas for those who have
 more than a high school education women seem to have higher rates of
 activity within the time window of 5-10 hours and men peak at around the
 20 hour window.
+
+# Problem 3
+
+Importing the data
+
+``` r
+jan_2020 = read_csv(file = "./data/Jan_2020_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names() %>% 
+  mutate(month_year = "jan_2020") %>% 
+  drop_na()
+```
+
+    ## Rows: 12420 Columns: 7
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
+    ## dbl (1): duration
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+jan_2024 = read_csv(file = "./data/Jan_2024_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names()%>% 
+  mutate(month_year = "jan_2024") %>% 
+  drop_na()
+```
+
+    ## Rows: 18861 Columns: 7
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
+    ## dbl (1): duration
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+july_2024 = read_csv(file = "./data/July_2024_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names() %>% 
+  mutate(month_year = "july_2024") %>% 
+  drop_na()
+```
+
+    ## Rows: 47156 Columns: 7
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
+    ## dbl (1): duration
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+july_2020 = read_csv(file = "./data/July_2020_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names() %>% 
+  mutate(month_year = "july_2020") %>% 
+  drop_na()
+```
+
+    ## Rows: 21048 Columns: 7
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
+    ## dbl (1): duration
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+combined_years_data =  
+  bind_rows(jan_2020, jan_2024, july_2020, july_2024)
+
+
+# producing reader friendly table 
+
+combined_years_data %>% 
+separate(month_year, into = c("month", "year"), sep = "_") %>% 
+  group_by(month, year, member_casual) %>% 
+  count(ride_id = "total_rides") %>% 
+  pivot_wider(
+    names_from = "member_casual",
+    values_from = "n"
+  ) %>% 
+  select(-ride_id) %>% 
+  knitr::kable()
+```
+
+| month | year | casual | member |
+|:------|:-----|-------:|-------:|
+| jan   | 2020 |    980 |  11418 |
+| jan   | 2024 |   2094 |  16705 |
+| july  | 2020 |   5625 |  15388 |
+| july  | 2024 |  10843 |  36200 |
