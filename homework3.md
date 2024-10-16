@@ -9,11 +9,6 @@ library(ggridges)
 library(hexbin)
 library(patchwork)
 
-knitr:: opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
 
 theme_set(theme_minimal()+ theme(legend.position = "bottom"))
 
@@ -90,7 +85,7 @@ ny_noaa %>%
     ## Warning: Removed 5931 rows containing missing values or values outside the scale range
     ## (`geom_path()`).
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-4-1.png" width="90%" />
+![](homework3_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 hex = 
@@ -110,7 +105,7 @@ hex + ridge
     ## Warning: Removed 1136276 rows containing non-finite outside the scale range
     ## (`stat_binhex()`).
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
+![](homework3_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 # Problem 2A
 
@@ -188,12 +183,13 @@ ggplot(demo_data, aes(x = age, fill = sex)) +
   )
 ```
 
-<img src="homework3_files/figure-gfm/age_dist-1.png" width="90%" /> From
-this plot we can see that females between the ages 20 and 40 have an
-education greater than high school in comparison to men. Whereas men
-have also who habe more than a highschool dregree are 20-40 but there
-are not as many. Additonally, those who have less than a high school
-dregree begin to somewhat overlap between men and women around 60-80 and
+![](homework3_files/figure-gfm/age_dist-1.png)<!-- --> For this plot, I
+used a density graph to demonstrate the distributions of age, sex, and
+education level. We can see that females between the ages 20 and 40 have
+an education greater than high school in comparison to men. Whereas men
+have also who have more than a high school degree are 20-40 but there
+are not as many. Additionally, those who have less than a high school
+degree begin to somewhat overlap between men and women around 60-80 and
 lastly for high school equivalent women tended to be between 60 and 80
 whereas mean were 20-40.
 
@@ -216,11 +212,11 @@ ggplot(aggregate_data, aes(x=age, y=total_activity, color=sex))+
   )
 ```
 
-<img src="homework3_files/figure-gfm/aggregate-1.png" width="90%" /> In
-this graph we can see a commonality in the slope changes, all educations
-have a negative slope. This implies that as age increases amount of
-total activity increases among all of the education categories. However,
-we can note that for women who have a high school equivalent education
+![](homework3_files/figure-gfm/aggregate-1.png)<!-- --> In this graph we
+can see a commonality in the slope changes, all educations have a
+negative slope. This implies that as age increases amount of total
+activity increases among all of the education categories. However, we
+can note that for women who have a high school equivalent education
 their total physical activity drops tremendously between the ages of 40
 and 60 whereas men in the less than high schools education physical
 activity drops tremendously after the ages 60-80. Another commonality is
@@ -242,7 +238,6 @@ activity_twenty_four_hour = combined_nhanes %>%
   mutate(hour= minute/60) 
 
 ggplot(activity_twenty_four_hour, aes(x=hour, y= activity, color=sex, group =seqn))+
-  geom_line(alpha= .2)+
   geom_smooth(aes(group = sex),se= FALSE)+
   facet_grid(. ~ education)+
   labs(
@@ -252,13 +247,18 @@ ggplot(activity_twenty_four_hour, aes(x=hour, y= activity, color=sex, group =seq
   )
 ```
 
-<img src="homework3_files/figure-gfm/twenty_four_hour-1.png" width="90%" />
-Based off of this graph we can see that within 24 hours that amount of
-activity for men and women overlap between those who attained less than
-or equivalent to a high school education. Whereas for those who have
-more than a high school education women seem to have higher rates of
-activity within the time window of 5-10 hours and men peak at around the
-20 hour window.
+![](homework3_files/figure-gfm/twenty_four_hour-1.png)<!-- --> Based off
+of this graph we can see that within 24 hours that amount of activity
+for men and women overlap a bit between those who attained less than
+high school education from 5-10 hrs, for high equivalent women have
+higher amounts of activity than men, lastly form more than high school
+education women differ largely from men ( they are more active).
+However, in the end throughout all levels of education, women and men
+activity decline at about the same amount of hours which are 20-25, this
+can possibly due to the time they are asleep. Furthermore, the graphs
+have meaning because they follow a sleep cycle in which hours 0-5 people
+are asleep and then everyone is active between working hours 6-15, this
+is a commonality across all.
 
 # Problem 3
 
@@ -313,9 +313,11 @@ combined_years_data =
                                                "classic",
                                                "electric"),
           duration = as.numeric(duration)) 
- 
+```
 
+Reader friendly table
 
+``` r
 # producing reader friendly table 
 
 combined_years_data %>% 
@@ -328,6 +330,9 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
   ) %>% 
   knitr::kable()
 ```
+
+    ## `summarise()` has grouped output by 'month', 'year'. You can override using the
+    ## `.groups` argument.
 
 | month | year | casual | member |
 |:------|:-----|-------:|-------:|
@@ -344,35 +349,34 @@ rides
 ``` r
 combined_years_data %>% 
   filter(month_year =="july_2024") %>% 
-separate(month_year, into = c("month", "year"), sep = "_") %>% 
-  group_by(month, year,start_station_name ) %>% 
+select(-month_year)%>% 
+  group_by(start_station_name ) %>% 
   summarise(total_rides = n())%>% 
   arrange(desc(total_rides)) %>% 
   slice(1:5) %>% 
-  pivot_wider(
-    names_from = start_station_name,
-    values_from = total_rides
-  ) %>% 
-  knitr::kable()
+  knitr::kable(
+    col.names = c("Start Station", "Ride Total")
+  )
 ```
 
-| month | year | Pier 61 at Chelsea Piers | University Pl & E 14 St | W 21 St & 6 Ave | West St & Chambers St | W 31 St & 7 Ave |
-|:------|:-----|-------------------------:|------------------------:|----------------:|----------------------:|----------------:|
-| july  | 2024 |                      163 |                     155 |             152 |                   150 |             145 |
+| Start Station            | Ride Total |
+|:-------------------------|-----------:|
+| Pier 61 at Chelsea Piers |        163 |
+| University Pl & E 14 St  |        155 |
+| W 21 St & 6 Ave          |        152 |
+| West St & Chambers St    |        150 |
+| W 31 St & 7 Ave          |        145 |
 
 ## problem 3 part 3
 
 ``` r
 med_duration = combined_years_data %>% 
-  separate(month_year, into = c("month", "year"), sep = "_") %>% 
-    mutate( month = factor(month),
-          month= forcats:: fct_relevel(month, "jan", "july"), 
-          year= as.numeric(year))%>% 
-  group_by(weekdays, month, year) %>% 
+  group_by(weekdays, month_year) %>% 
   summarise(median_duration = median(duration, na.rm = TRUE))
   
+
   
-ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month)) +
+ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month_year)) +
          geom_bar(stat = "identity", position = "dodge")+
   facet_grid(.~year) %>% 
   labs(
@@ -386,14 +390,17 @@ ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month)) +
   legend.position = "right")
 ```
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />
-From this graph we can see that the month of July has the greatest
-amount of median duration throughout the weekdays, they are most
-significant around the weekend. Additionally, we can also see that the
-month of January has half the amount of median ride duration than July.
-This can possibly be due to the seasons, July is warmer and January is
-colder. Lastly, we can observe that the median rider duration is highest
-around the days Saturday and Sunday.
+![](homework3_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> From this
+graph we can see that the month of July has the greatest amount of
+median duration throughout the weekdays, they are most significant
+around the weekend. More specifically, July 2020 has the highest amount
+of ride duration throughout all weekdays but it is also highest on the
+weekend. Additionally, we can see that the median ride duration for the
+month of January in 2020 and 2024 is less than July 2020 and 2024. This
+can possibly be due to the seasons, July is warmer and January is
+colder.Another inference we can make for July 2020 and Jan 2020 having
+higher ratesof ride duration than Jan and July 2024 is because of COVID,
+more people were becoming active due to quarantine.
 
 ## problem 3 part 4
 
@@ -446,7 +453,16 @@ twenty_twenty_plot = ggplot(twenty_twenty, aes(x = duration, fill= rideable_type
 (twenty_four_plot / twenty_twenty_plot)
 ```
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-7-1.png" width="90%" />
+![](homework3_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-Path worked the two graphs of 2020 and 2024 to compare differences in
-use of classic and electric bike among casual and member riders.
+Patch worked the two graphs of 2020 and 2024 to compare differences in
+use of classic and electric bike among casual and member riders. I used
+a density graph to to show the distribution of ride duration. We can see
+that in 2020 of January electric bikes were not used at all, this can
+possibly due to them not being used as common or COVID and people wanted
+more physical activity. Then in July 2020 we can see that that electric
+bikes begin to be used but members are using classic bikes a bit more
+than casual riders. We can also see in July 2020 that casual members use
+classic bikes and electric bikes more equally. When we compare to 2024
+we can observe that Jan 20204 both casual and members are using electric
+bikes more and this is also observed in July 2024 as well.
