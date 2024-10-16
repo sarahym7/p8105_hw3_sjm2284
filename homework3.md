@@ -84,9 +84,6 @@ ny_noaa %>%
   labs(title = "Mean monthly temperature for each station across years for January and July")
 ```
 
-    ## `summarise()` has grouped output by 'id', 'year'. You can override using the
-    ## `.groups` argument.
-
     ## Warning: Removed 5970 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
@@ -112,8 +109,6 @@ hex + ridge
 
     ## Warning: Removed 1136276 rows containing non-finite outside the scale range
     ## (`stat_binhex()`).
-
-    ## Picking joint bandwidth of 3.76
 
 <img src="homework3_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
 
@@ -375,12 +370,8 @@ med_duration = combined_years_data %>%
           year= as.numeric(year))%>% 
   group_by(weekdays, month, year) %>% 
   summarise(median_duration = median(duration, na.rm = TRUE))
-```
-
-    ## `summarise()` has grouped output by 'weekdays', 'month'. You can override using
-    ## the `.groups` argument.
-
-``` r
+  
+  
 ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month)) +
          geom_bar(stat = "identity", position = "dodge")+
   facet_grid(.~year) %>% 
@@ -429,7 +420,7 @@ twenty_four_plot = ggplot(twenty_four, aes(x = duration, fill= rideable_type)) +
          geom_density(alpha = 0.5)+
   facet_grid(member_casual ~ month) +
   labs(
-     title = " Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
+     title = " 2024 Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
     x = " Ride Duration",
     y = "Density",
     fill = "Bike_type"
@@ -443,7 +434,7 @@ twenty_twenty_plot = ggplot(twenty_twenty, aes(x = duration, fill= rideable_type
          geom_density(alpha = 0.5)+
   facet_grid(member_casual ~ month) +
       labs(
-     title = " Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
+     title = "2020 Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
     x = " Ride Duration",
     y = "Density",
     fill = "Bike_type"
@@ -455,9 +446,7 @@ twenty_twenty_plot = ggplot(twenty_twenty, aes(x = duration, fill= rideable_type
 (twenty_four_plot / twenty_twenty_plot)
 ```
 
-    ## Warning: Groups with fewer than two data points have been dropped.
-
-    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
-    ## -Inf
-
 <img src="homework3_files/figure-gfm/unnamed-chunk-7-1.png" width="90%" />
+
+Path worked the two graphs of 2020 and 2024 to compare differences in
+use of classic and electric bike among casual and member riders.

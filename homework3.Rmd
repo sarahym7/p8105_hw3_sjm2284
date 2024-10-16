@@ -45,7 +45,7 @@ data("ny_noaa")
 ```
 This dataset has `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. Variables include weather station id, date of observation,  (tenths of mm), snowfall (mm), snow depth (mm), and min and max temperature (tenths of degrees C).
 
-```{r}
+```{r, message=FALSE}
 ny_noaa %>% 
   count(snow) %>%
   arrange(desc(n))
@@ -58,7 +58,7 @@ ny_noaa =
     tmin = as.numeric(tmin))
 ```
 
-```{r}
+```{r, message=FALSE}
 ny_noaa %>% 
   group_by(id, year, month) %>% 
   filter(month %in% c(1, 7)) %>% 
@@ -68,7 +68,7 @@ ny_noaa %>%
   labs(title = "Mean monthly temperature for each station across years for January and July")
 ```
 
-```{r}
+```{r, message=FALSE}
 hex = 
   ny_noaa %>% 
   ggplot(aes(x = tmin, y = tmax)) + 
@@ -307,7 +307,7 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
 
 
 ## problem 3 part 3
-```{r}
+```{r, message=FALSE}
 
 med_duration = combined_years_data %>% 
   separate(month_year, into = c("month", "year"), sep = "_") %>% 
@@ -337,7 +337,7 @@ From this graph we can see that the month of July has the greatest amount of med
 
 ## problem 3 part 4 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
 twenty_four = combined_years_data %>% 
     separate(month_year, into = c("month", "year"), sep = "_") %>%  
@@ -361,7 +361,7 @@ twenty_four_plot = ggplot(twenty_four, aes(x = duration, fill= rideable_type)) +
          geom_density(alpha = 0.5)+
   facet_grid(member_casual ~ month) +
   labs(
-     title = " Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
+     title = " 2024 Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
     x = " Ride Duration",
     y = "Density",
     fill = "Bike_type"
@@ -375,7 +375,7 @@ twenty_twenty_plot = ggplot(twenty_twenty, aes(x = duration, fill= rideable_type
          geom_density(alpha = 0.5)+
   facet_grid(member_casual ~ month) +
       labs(
-     title = " Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
+     title = "2020 Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
     x = " Ride Duration",
     y = "Density",
     fill = "Bike_type"
@@ -388,9 +388,7 @@ twenty_twenty_plot = ggplot(twenty_twenty, aes(x = duration, fill= rideable_type
 
 ```
 
-
-
-
+Path worked the two graphs of 2020 and 2024 to compare differences in use of classic and electric bike among casual and member riders.
 
 
 
