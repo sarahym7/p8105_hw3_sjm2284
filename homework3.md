@@ -147,9 +147,9 @@ ggplot(demo_data, aes(x = age, fill = sex)) +
   )
 ```
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-4-1.png" width="90%" />
-From this plot we can see that females between the ages 20 and 40 have
-an education greater than high school in comparison to men. Whereas men
+<img src="homework3_files/figure-gfm/age_dist-1.png" width="90%" /> From
+this plot we can see that females between the ages 20 and 40 have an
+education greater than high school in comparison to men. Whereas men
 have also who habe more than a highschool dregree are 20-40 but there
 are not as many. Additonally, those who have less than a high school
 dregree begin to somewhat overlap between men and women around 60-80 and
@@ -177,17 +177,16 @@ ggplot(aggregate_data, aes(x=age, y=total_activity, color=sex))+
 
     ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
-In this graph we can see a commonality in the slope changes, all
-educations have a negative slope. This implies that as age increases
-amount of total activity increases among all of the education
-categories. However, we can note that for women who have a high school
-equivalent education their total physical activity drops tremendously
-between the ages of 40 and 60 whereas men in the less than high schools
-education physical activity drops tremendously after the ages 60-80.
-Another commonality is that at around age 80 across the education levels
-men and women have about the same amount of total activity being about
-10,000 min.
+<img src="homework3_files/figure-gfm/aggregate-1.png" width="90%" /> In
+this graph we can see a commonality in the slope changes, all educations
+have a negative slope. This implies that as age increases amount of
+total activity increases among all of the education categories. However,
+we can note that for women who have a high school equivalent education
+their total physical activity drops tremendously between the ages of 40
+and 60 whereas men in the less than high schools education physical
+activity drops tremendously after the ages 60-80. Another commonality is
+that at around age 80 across the education levels men and women have
+about the same amount of total activity being about 10,000 min.
 
 ## Problem 2D
 
@@ -216,7 +215,7 @@ ggplot(activity_twenty_four_hour, aes(x=hour, y= activity, color=sex, group =seq
 
     ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
 
-<img src="homework3_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />
+<img src="homework3_files/figure-gfm/twenty_four_hour-1.png" width="90%" />
 Based off of this graph we can see that within 24 hours that amount of
 activity for men and women overlap between those who attained less than
 or equivalent to a high school education. Whereas for those who have
@@ -304,14 +303,16 @@ combined_years_data =
 combined_years_data %>% 
 separate(month_year, into = c("month", "year"), sep = "_") %>% 
   group_by(month, year, member_casual) %>% 
-  count(ride_id = "total_rides") %>% 
+  summarise(total_rides = n()) %>% 
   pivot_wider(
     names_from = "member_casual",
-    values_from = "n"
+    values_from = "total_rides"
   ) %>% 
-  select(-ride_id) %>% 
   knitr::kable()
 ```
+
+    ## `summarise()` has grouped output by 'month', 'year'. You can override using the
+    ## `.groups` argument.
 
 | month | year | casual | member |
 |:------|:-----|-------:|-------:|
@@ -319,3 +320,30 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
 | jan   | 2024 |   2094 |  16705 |
 | july  | 2020 |   5625 |  15388 |
 | july  | 2024 |  10843 |  36200 |
+
+## problem 3 part 2
+
+table of the 5 most popular starting stations for july 2024 + number of
+rides
+
+``` r
+combined_years_data %>% 
+  filter(month_year =="july_2024") %>% 
+separate(month_year, into = c("month", "year"), sep = "_") %>% 
+  group_by(month, year,start_station_name ) %>% 
+  summarise(total_rides = n())%>% 
+  arrange(desc(total_rides)) %>% 
+  slice(1:5) %>% 
+  pivot_wider(
+    names_from = start_station_name,
+    values_from = total_rides
+  ) %>% 
+  knitr::kable()
+```
+
+    ## `summarise()` has grouped output by 'month', 'year'. You can override using the
+    ## `.groups` argument.
+
+| month | year | Pier 61 at Chelsea Piers | University Pl & E 14 St | W 21 St & 6 Ave | West St & Chambers St | W 31 St & 7 Ave |
+|:------|:-----|-------------------------:|------------------------:|----------------:|----------------------:|----------------:|
+| july  | 2024 |                      163 |                     155 |             152 |                   150 |             145 |
