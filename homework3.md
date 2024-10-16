@@ -297,9 +297,28 @@ july_2020 = read_csv(file = "./data/July_2020_Citi.csv", na = c("", "NA", 999)) 
 combined_years_data =  
   bind_rows(jan_2020, jan_2024, july_2020, july_2024) %>% 
   janitor::clean_names() %>% 
+   mutate(rideable_type = recode(rideable_type, 
+                                "classic_bike" = "classic",
+                                "electric_bike" = "electric")) %>% 
   mutate( weekdays= factor(weekdays),
-          weekdays= forcats:: fct_relevel(weekdays, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), 
-          duration = as.numeric(duration))
+          weekdays= forcats:: fct_relevel(weekdays,
+                                          "Monday", 
+                                          "Tuesday",
+                                          "Wednesday", 
+                                          "Thursday", 
+                                          "Friday",
+                                          "Saturday", 
+                                          "Sunday"), 
+          member_casual = factor(member_casual),
+          member_casual = forcats::fct_relevel(member_casual, 
+                                               "casual",
+                                               "member"),
+          rideable_type = factor(rideable_type),
+          rideable_type = forcats::fct_relevel(rideable_type,
+                                               "classic",
+                                               "electric"),
+          duration = as.numeric(duration)) 
+ 
 
 
 # producing reader friendly table 
@@ -377,3 +396,68 @@ ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month)) +
 ```
 
 <img src="homework3_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />
+From this graph we can see that the month of July has the greatest
+amount of median duration throughout the weekdays, they are most
+significant around the weekend. Additionally, we can also see that the
+month of January has half the amount of median ride duration than July.
+This can possibly be due to the seasons, July is warmer and January is
+colder. Lastly, we can observe that the median rider duration is highest
+around the days Saturday and Sunday.
+
+## problem 3 part 4
+
+``` r
+twenty_four = combined_years_data %>% 
+    separate(month_year, into = c("month", "year"), sep = "_") %>%  
+  mutate( month = factor(month),
+          month= forcats:: fct_relevel(month, "jan", "july"), 
+          year= as.numeric(year)) %>% 
+  filter( year == 2024) %>% 
+  select(month,member_casual,rideable_type, duration)
+
+
+twenty_twenty = combined_years_data %>% 
+    separate(month_year, into = c("month", "year"), sep = "_") %>%  
+  mutate( month = factor(month),
+          month= forcats:: fct_relevel(month, "jan", "july"), 
+          year= as.numeric(year)) %>% 
+  filter( year == 2020) %>% 
+  select(month,member_casual,rideable_type, duration)
+
+
+twenty_four_plot = ggplot(twenty_four, aes(x = duration, fill= rideable_type)) +
+         geom_density(alpha = 0.5)+
+  facet_grid(member_casual ~ month) +
+  labs(
+     title = " Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
+    x = " Ride Duration",
+    y = "Density",
+    fill = "Bike_type"
+  ) +
+  theme_minimal()+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+  legend.position = "right")
+
+
+twenty_twenty_plot = ggplot(twenty_twenty, aes(x = duration, fill= rideable_type)) +
+         geom_density(alpha = 0.5)+
+  facet_grid(member_casual ~ month) +
+      labs(
+     title = " Impact of Month, Membership,and Bike Type on Distribution of Ride Duration",
+    x = " Ride Duration",
+    y = "Density",
+    fill = "Bike_type"
+  )+
+  theme_minimal()+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+  legend.position = "right")
+
+(twenty_four_plot / twenty_twenty_plot)
+```
+
+    ## Warning: Groups with fewer than two data points have been dropped.
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+<img src="homework3_files/figure-gfm/unnamed-chunk-7-1.png" width="90%" />
