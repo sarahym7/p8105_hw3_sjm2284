@@ -5,7 +5,7 @@ date: "10/13/2023"
 output: github_document
 ---
 
-```{r}
+```{r, message=FALSE}
 library(tidyverse)
 library(ggridges)
 library(hexbin)
@@ -35,7 +35,7 @@ scale_colour_discrete = scale_fill_viridis_d()
 
 # Problem 1 
 
-```{r problem 1, eval=FALSE}
+```{r problem 1, message=FALSE}
 library(p8105.datasets)
 data("ny_noaa")
 ```
@@ -45,7 +45,7 @@ data("ny_noaa")
 # Problem 2A 
 
 Reading In, Cleaning, Combining Data 
-```{r, data_clean}
+```{r, data_clean, message=FALSE}
 
 #reading in data and cleaning 
 accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA", 999)) %>%
@@ -78,7 +78,7 @@ combined_nhanes =
 
 ## 2B Producing reader friendly table for number of men and women in each education category 
 
-```{r, reader_friend}
+```{r, reader_friend, ,message=FALSE}
 combined_nhanes %>% 
             group_by(sex,education) %>% 
             summarize(counts= n()) %>% 
@@ -95,7 +95,7 @@ Based on this output more men have a high school equivalent education whereas mo
 
 
 Age Distributions of each category
-```{r, age_dist}
+```{r, age_dist, message=FALSE}
 
  demo_data= combined_nhanes %>% 
   select(age,sex,education) %>% 
@@ -119,7 +119,7 @@ From this plot we can see that females between the ages 20 and 40 have an educat
 
 ## Problem 2C Aggregating Across Minutes to Create Total Activity 
 
-```{r, aggregate}
+```{r, aggregate, message=FALSE}
 
  aggregate_data = combined_nhanes %>% 
   mutate(total_activity= rowSums(select(.,starts_with("min")))) %>% 
@@ -142,7 +142,7 @@ In this graph we can see a commonality in the slope changes, all educations have
 ## Problem 2D 
 
 Three panel plot showing 24 hour activity time course 
-```{r, twenty_four_hour}
+```{r, twenty_four_hour, message=FALSE}
  
 activity_twenty_four_hour = combined_nhanes %>%
   pivot_longer(
@@ -174,7 +174,7 @@ Based off of this graph we can see that within 24 hours that amount of activity 
 ## problem 3 part 1
 Importing the data 
 
-```{r, member_cas}
+```{r, member_cas, message=FALSE}
 
 jan_2020 = read_csv(file = "./data/Jan_2020_Citi.csv", na = c("", "NA", 999)) %>% 
   janitor::clean_names() %>% 
@@ -221,7 +221,7 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
 
 table of the 5 most popular starting stations for july 2024 + number of rides
 
-```{r, 5_pop}
+```{r, 5_pop, message=FALSE}
 combined_years_data %>% 
   filter(month_year =="july_2024") %>% 
 separate(month_year, into = c("month", "year"), sep = "_") %>% 

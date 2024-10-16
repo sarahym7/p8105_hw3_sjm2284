@@ -5,20 +5,6 @@ Sarahy Martinez
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-    ## ✔ purrr     1.0.2     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-``` r
 library(ggridges)
 library(hexbin)
 library(patchwork)
@@ -59,34 +45,15 @@ accelerometer_data = read_csv(file = "./data/nhanes_accel.csv", na = c("", "NA",
   janitor::clean_names() %>%
   mutate(seqn=as.character(seqn)) %>% 
   drop_na()
-```
 
-    ## Rows: 250 Columns: 1441
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## dbl (1441): SEQN, min1, min2, min3, min4, min5, min6, min7, min8, min9, min1...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-``` r
 demographics_data = read_csv(file = "./data/nhanes_covar.csv",na = c("", "NA", 999),
                     skip = 4, col_names =TRUE) %>% 
                     janitor::clean_names() %>% 
                      mutate(seqn=as.character(seqn)) %>% 
                     filter(age >=21) %>% 
                     drop_na()
-```
 
-    ## Rows: 250 Columns: 5
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## dbl (5): SEQN, sex, age, BMI, education
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 combined_nhanes = 
   left_join(accelerometer_data, demographics_data, by= "seqn") %>% 
   janitor::clean_names() %>%
@@ -114,9 +81,6 @@ combined_nhanes %>%
             ) %>% 
   knitr::kable()
 ```
-
-    ## `summarise()` has grouped output by 'sex'. You can override using the `.groups`
-    ## argument.
 
 | sex    | Education Less than High School | Education High School Equivalent | Education More than High School |
 |:-------|--------------------------------:|---------------------------------:|--------------------------------:|
@@ -175,8 +139,6 @@ ggplot(aggregate_data, aes(x=age, y=total_activity, color=sex))+
   )
 ```
 
-    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-
 <img src="homework3_files/figure-gfm/aggregate-1.png" width="90%" /> In
 this graph we can see a commonality in the slope changes, all educations
 have a negative slope. This implies that as age increases amount of
@@ -213,8 +175,6 @@ ggplot(activity_twenty_four_hour, aes(x=hour, y= activity, color=sex, group =seq
   )
 ```
 
-    ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
-
 <img src="homework3_files/figure-gfm/twenty_four_hour-1.png" width="90%" />
 Based off of this graph we can see that within 24 hours that amount of
 activity for men and women overlap between those who attained less than
@@ -234,66 +194,24 @@ jan_2020 = read_csv(file = "./data/Jan_2020_Citi.csv", na = c("", "NA", 999)) %>
   janitor::clean_names() %>% 
   mutate(month_year = "jan_2020") %>% 
   drop_na()
-```
 
-    ## Rows: 12420 Columns: 7
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
-    ## dbl (1): duration
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 jan_2024 = read_csv(file = "./data/Jan_2024_Citi.csv", na = c("", "NA", 999)) %>% 
   janitor::clean_names()%>% 
   mutate(month_year = "jan_2024") %>% 
   drop_na()
-```
 
-    ## Rows: 18861 Columns: 7
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
-    ## dbl (1): duration
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 july_2024 = read_csv(file = "./data/July_2024_Citi.csv", na = c("", "NA", 999)) %>% 
   janitor::clean_names() %>% 
   mutate(month_year = "july_2024") %>% 
   drop_na()
-```
 
-    ## Rows: 47156 Columns: 7
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
-    ## dbl (1): duration
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-``` r
 july_2020 = read_csv(file = "./data/July_2020_Citi.csv", na = c("", "NA", 999)) %>% 
   janitor::clean_names() %>% 
   mutate(month_year = "july_2020") %>% 
   drop_na()
-```
 
-    ## Rows: 21048 Columns: 7
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (6): ride_id, rideable_type, weekdays, start_station_name, end_station_n...
-    ## dbl (1): duration
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-``` r
 combined_years_data =  
   bind_rows(jan_2020, jan_2024, july_2020, july_2024)
 
@@ -310,9 +228,6 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
   ) %>% 
   knitr::kable()
 ```
-
-    ## `summarise()` has grouped output by 'month', 'year'. You can override using the
-    ## `.groups` argument.
 
 | month | year | casual | member |
 |:------|:-----|-------:|-------:|
@@ -340,9 +255,6 @@ separate(month_year, into = c("month", "year"), sep = "_") %>%
   ) %>% 
   knitr::kable()
 ```
-
-    ## `summarise()` has grouped output by 'month', 'year'. You can override using the
-    ## `.groups` argument.
 
 | month | year | Pier 61 at Chelsea Piers | University Pl & E 14 St | W 21 St & 6 Ave | West St & Chambers St | W 31 St & 7 Ave |
 |:------|:-----|-------------------------:|------------------------:|----------------:|----------------------:|----------------:|
