@@ -324,7 +324,7 @@ ggplot(med_duration, aes(x = weekdays, y=median_duration, fill=month_year)) +
   legend.position = "right")
 
 ```
-From this graph we can see that the month of July has the greatest amount of median duration throughout the weekdays, they are most significant around the weekend. More specifically, July 2020 has the highest amount of ride duration throughout all weekdays but it is also highest on the weekend. Additionally, we can  see that the median ride duration for the  month of January in 2020 and 2024 is less than July 2020 and 2024. This can possibly be due to the seasons, July is warmer and January is colder.Another inference we can make for July 2020 and Jan 2020 having higher ratesof ride duration than Jan and July 2024 is because of COVID, more people were becoming active due to quarantine. 
+From this graph we can see that the month of July has the greatest amount of median duration throughout the weekdays, they are most significant around the weekend. More specifically, July 2020 has the highest amount of ride duration throughout all weekdays but it is also highest on the weekend. Additionally, we can  see that the median ride duration for the  month of January in 2020 and 2024 is less than July 2020 and 2024. This can possibly be due to the seasons, July is warmer and January is colder.Another inference we can make for July 2020 and Jan 2020 having higher rates of ride duration than Jan and July 2024 is because of COVID, more people were becoming active due to quarantine. 
 
 
 ## problem 3 part 4 

@@ -390,8 +390,8 @@ weekend. Additionally, we can see that the median ride duration for the
 month of January in 2020 and 2024 is less than July 2020 and 2024. This
 can possibly be due to the seasons, July is warmer and January is
 colder.Another inference we can make for July 2020 and Jan 2020 having
-higher ratesof ride duration than Jan and July 2024 is because of COVID,
-more people were becoming active due to quarantine.
+higher rates of ride duration than Jan and July 2024 is because of
+COVID, more people were becoming active due to quarantine.
 
 ## problem 3 part 4
 
