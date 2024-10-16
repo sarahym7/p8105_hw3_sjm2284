@@ -226,6 +226,8 @@ activity within the time window of 5-10 hours and men peak at around the
 
 # Problem 3
 
+## problem 3 part 1
+
 Importing the data
 
 ``` r

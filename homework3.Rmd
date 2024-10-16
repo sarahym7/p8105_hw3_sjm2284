@@ -171,7 +171,7 @@ Based off of this graph we can see that within 24 hours that amount of activity 
 
 # Problem 3
 
-
+## problem 3 part 1
 Importing the data 
 
 ```{r}
