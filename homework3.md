@@ -32,8 +32,90 @@ scale_colour_discrete = scale_fill_viridis_d()
 
 ``` r
 library(p8105.datasets)
+```
+
+reading in data
+
+``` r
 data("ny_noaa")
 ```
+
+This dataset has 2595176 rows and 7 columns. Variables include weather
+station id, date of observation, (tenths of mm), snowfall (mm), snow
+depth (mm), and min and max temperature (tenths of degrees C).
+
+``` r
+ny_noaa %>% 
+  count(snow) %>%
+  arrange(desc(n))
+```
+
+    ## # A tibble: 282 × 2
+    ##     snow       n
+    ##    <int>   <int>
+    ##  1     0 2008508
+    ##  2    NA  381221
+    ##  3    25   31022
+    ##  4    13   23095
+    ##  5    51   18274
+    ##  6    76   10173
+    ##  7     8    9962
+    ##  8     5    9748
+    ##  9    38    9197
+    ## 10     3    8790
+    ## # ℹ 272 more rows
+
+``` r
+ny_noaa = 
+  ny_noaa %>% 
+  separate(date, into = c("year", "month", "day"), convert = TRUE) %>% 
+  mutate(
+    tmax = as.numeric(tmax),
+    tmin = as.numeric(tmin))
+```
+
+``` r
+ny_noaa %>% 
+  group_by(id, year, month) %>% 
+  filter(month %in% c(1, 7)) %>% 
+  summarize(mean_tmax = mean(tmax, na.rm = TRUE, color = id)) %>% 
+  ggplot(aes(x = year, y = mean_tmax, group = id)) + geom_point() + geom_path() +
+  facet_grid(~month) +
+  labs(title = "Mean monthly temperature for each station across years for January and July")
+```
+
+    ## `summarise()` has grouped output by 'id', 'year'. You can override using the
+    ## `.groups` argument.
+
+    ## Warning: Removed 5970 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## Warning: Removed 5931 rows containing missing values or values outside the scale range
+    ## (`geom_path()`).
+
+<img src="homework3_files/figure-gfm/unnamed-chunk-4-1.png" width="90%" />
+
+``` r
+hex = 
+  ny_noaa %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_hex()
+
+ridge = 
+  ny_noaa %>% 
+  filter(snow < 100, snow > 0) %>%
+  ggplot(aes(x = snow, y = as.factor(year))) + 
+  geom_density_ridges()
+
+hex + ridge
+```
+
+    ## Warning: Removed 1136276 rows containing non-finite outside the scale range
+    ## (`stat_binhex()`).
+
+    ## Picking joint bandwidth of 3.76
+
+<img src="homework3_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
 
 # Problem 2A
 
