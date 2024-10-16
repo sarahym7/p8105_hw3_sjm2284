@@ -79,12 +79,6 @@ ny_noaa %>%
   labs(title = "Mean monthly temperature for each station across years for January and July")
 ```
 
-    ## Warning: Removed 5970 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
-
-    ## Warning: Removed 5931 rows containing missing values or values outside the scale range
-    ## (`geom_path()`).
-
 ![](homework3_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
@@ -101,9 +95,6 @@ ridge =
 
 hex + ridge
 ```
-
-    ## Warning: Removed 1136276 rows containing non-finite outside the scale range
-    ## (`stat_binhex()`).
 
 ![](homework3_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 

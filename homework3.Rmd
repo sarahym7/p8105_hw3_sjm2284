@@ -35,7 +35,7 @@ library(p8105.datasets)
 ```
 
 reading in data 
-```{r}
+```{r, message=FALSE}
 data("ny_noaa")
 ```
 This dataset has `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. Variables include weather station id, date of observation,  (tenths of mm), snowfall (mm), snow depth (mm), and min and max temperature (tenths of degrees C).
@@ -53,7 +53,7 @@ ny_noaa =
     tmin = as.numeric(tmin))
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 ny_noaa %>% 
   group_by(id, year, month) %>% 
   filter(month %in% c(1, 7)) %>% 
@@ -63,7 +63,7 @@ ny_noaa %>%
   labs(title = "Mean monthly temperature for each station across years for January and July")
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 hex = 
   ny_noaa %>% 
   ggplot(aes(x = tmin, y = tmax)) + 
