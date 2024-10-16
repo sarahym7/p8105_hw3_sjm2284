@@ -169,11 +169,53 @@ Based off of this graph we can see that within 24 hours that amount of activity 
 
 
 
+# Problem 3
 
 
+Importing the data 
+
+```{r}
+
+jan_2020 = read_csv(file = "./data/Jan_2020_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names() %>% 
+  mutate(month_year = "jan_2020") %>% 
+  drop_na()
+
+jan_2024 = read_csv(file = "./data/Jan_2024_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names()%>% 
+  mutate(month_year = "jan_2024") %>% 
+  drop_na()
+
+july_2024 = read_csv(file = "./data/July_2024_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names() %>% 
+  mutate(month_year = "july_2024") %>% 
+  drop_na()
 
 
+july_2020 = read_csv(file = "./data/July_2020_Citi.csv", na = c("", "NA", 999)) %>% 
+  janitor::clean_names() %>% 
+  mutate(month_year = "july_2020") %>% 
+  drop_na()
 
+
+combined_years_data =  
+  bind_rows(jan_2020, jan_2024, july_2020, july_2024)
+
+
+# producing reader friendly table 
+
+combined_years_data %>% 
+separate(month_year, into = c("month", "year"), sep = "_") %>% 
+  group_by(month, year, member_casual) %>% 
+  count(ride_id = "total_rides") %>% 
+  pivot_wider(
+    names_from = "member_casual",
+    values_from = "n"
+  ) %>% 
+  select(-ride_id) %>% 
+  knitr::kable()
+
+```
 
 
 
